@@ -12,6 +12,10 @@ const db = mysql.createConnection({
 db.connect(function(err) {
     if (err) throw err
     console.log("Connected!");
+    var sql3 = "CREATE TABLE IF NOT EXISTS users (userId VARCHAR(767), username VARCHAR(767), password VARCHAR(767) , bio VARCHAR(767) ,img VARCHAR(767) )";
+    db.query(sql3, function (err, result) {
+      if (err) throw err;
+    });
     var sql = "CREATE TABLE IF NOT EXISTS posts (postId INTEGER(11), userId VARCHAR(767), caption VARCHAR(767) ,img VARCHAR(767) , date VARCHAR(767) , PRIMARY KEY (postId) )";
     db.query(sql, function (err, result) {
       if (err) throw err;
@@ -24,10 +28,6 @@ db.connect(function(err) {
     db.query(sql2, function (err, result) {
       if (err) throw err;
     }); 
-    var sql3 = "CREATE TABLE IF NOT EXISTS users (userId VARCHAR(767), username VARCHAR(767), password VARCHAR(767) , bio VARCHAR(767) ,img VARCHAR(767) )";
-    db.query(sql3, function (err, result) {
-      if (err) throw err;
-    });
   });
 
 
