@@ -6,7 +6,7 @@ const { sizeError } = require("../../middlewares/sizeError")
 
 router.route("/")
     .get(getAllPosts)
-    .post(upload ,sizeError,createPost)
+    .post(upload ,createPost)
 
 router.route("/userPosts")
     .get(getPostsByUserId)

@@ -5,6 +5,9 @@ const path = require("path")
 const {getNewDate} = require("../middlewares/dataFormater")
 const { resultOfSize } = require("../middlewares/sizeError")
 
+const fsPromises = require("fs/promises")
+const fs = require("fs")
+
 const createPost = async(req , res)=>{
 
     const {userId , caption } = req.body
@@ -76,6 +79,7 @@ const getPostsByUserId = async(req , res)=>{
 
 
 const storage = multer.diskStorage({
+    
     destination:(req , file ,cb)=>{
         cb(null , 'images/postImg')
     },

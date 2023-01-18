@@ -7,7 +7,7 @@ const cors = require("cors")
 const cookieParser = require('cookie-parser')
 const corsOptions = require("./config/corsOptions")
 const verifyJWT = require("./middlewares/verifyJWT")
-
+const {fileCreator} = require("./middlewares/fileCreator")
 /* app.use(logger) */
 
 /* app.use(cors(corsOptions)) */
@@ -16,6 +16,8 @@ app.use(cors())
 app.use(cookieParser())
 
 app.use(express.json())
+
+app.use(fileCreator)
 
 app.use("/images" , express.static("images"))
 
