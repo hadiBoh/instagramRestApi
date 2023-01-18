@@ -12,7 +12,23 @@ const db = mysql.createConnection({
 db.connect(function(err) {
     if (err) throw err
     console.log("Connected!");
-    var sql3 = "CREATE TABLE IF NOT EXISTS users (userId VARCHAR(128), username VARCHAR(128) UNIQUE, password VARCHAR(128) , bio VARCHAR(128) ,profile VARCHAR(128) )";
+    var fuck = "DROP TABLE IF EXISTS likes"
+    db.query(fuck, function (err, result) {
+      if (err) throw err;
+    });
+    var fuck1 = "DROP TABLE IF EXISTS users"
+    db.query(fuck1, function (err, result) {
+      if (err) throw err;
+    });
+    var fuck2 = "DROP TABLE IF EXISTS posts"
+    db.query(fuck2, function (err, result) {
+      if (err) throw err;
+    });
+    var fuck3 = "DROP TABLE IF EXISTS comments"
+    db.query(fuck3, function (err, result) {
+      if (err) throw err;
+    });
+/*     var sql3 = "CREATE TABLE IF NOT EXISTS users (userId VARCHAR(128), username VARCHAR(128) UNIQUE, password VARCHAR(128) , bio VARCHAR(128) ,profile VARCHAR(128) )";
     db.query(sql3, function (err, result) {
       if (err) throw err;
     });
@@ -27,7 +43,7 @@ db.connect(function(err) {
     var sql2 = "CREATE TABLE IF NOT EXISTS likes (id INTEGER(11), userId VARCHAR(128), postId VARCHAR(128) ,PRIMARY KEY (id))";
     db.query(sql2, function (err, result) {
       if (err) throw err;
-    }); 
+    });  */
   });
 
 
