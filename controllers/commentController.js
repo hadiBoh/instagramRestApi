@@ -1,13 +1,14 @@
 const { path } = require("path")
-const { getNewDate } = require("../middleWares/dataFormater")
+
 const {addComment , fetchComments, fetchCommentsByPostId} = require("../services/commentService")
 
+const {sub} = require("date-fns")
 
 
 
 const createComment = async (req , res)=>{
     const {postId , userId , comment } = req.body
-    const date = getNewDate()
+    const date = sub(new Date() , {minutes:-210}).toISOString()
 
     const data = {postId , userId , comment , date}
 

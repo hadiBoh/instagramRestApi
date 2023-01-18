@@ -3,13 +3,14 @@ const {addPost , fetchPosts, fetchUserPost} = require("../services/postService")
 const {fetchComments} = require("../services/commentService")
 const multer = require("multer")
 const path = require("path")
-const {getNewDate} = require("../middlewares/dataFormater")
+
+const {sub} = require("date-fns")
 
 
 const createPost = async(req , res)=>{
 
     const {userId , caption } = req.body
-    const date = getNewDate()
+    const date = sub(new Date() , {minutes:-210}).toISOString()
     if(!userId) return res.status(400).json({message:"userId is required!"})
 
     const route = req?.file.path
