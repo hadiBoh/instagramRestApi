@@ -1,7 +1,7 @@
 const mysql = require('mysql')
 
 const db = mysql.createConnection({
-    port:process.env.PORT,
+    port:process.env.DB_PORT,
     host:process.env.HOST,
     user:"root",
     password:process.env.PASSWORD,
@@ -9,7 +9,7 @@ const db = mysql.createConnection({
 })
 
 
-/* db.connect(function(err) {
+db.connect(function(err) {
     if (err) throw err
     console.log("Connected!");
     var sql = "CREATE TABLE IF NOT EXISTS posts (postId INTEGER(11), userId VARCHAR(767), caption VARCHAR(767) ,img VARCHAR(767) , date VARCHAR(767) , PRIMARY KEY (postId) )";
@@ -28,7 +28,7 @@ const db = mysql.createConnection({
     db.query(sql3, function (err, result) {
       if (err) throw err;
     });
-  }); */
+  });
 
 
 module.exports = db
