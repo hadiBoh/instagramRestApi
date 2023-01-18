@@ -1,12 +1,10 @@
-const {getNewDate} = require("../middlewares/dataFormater")
+const { resultOfSize } = require("../middlewares/sizeError")
 const {addPost , fetchPosts, fetchUserPost} = require("../services/postService")
 const {fetchComments} = require("../services/commentService")
 const multer = require("multer")
 const path = require("path")
-const { resultOfSize } = require("../middlewares/sizeError")
+const {getNewDate} = require("../middlewares/dataFormater")
 
-const fsPromises = require("fs/promises")
-const fs = require("fs")
 
 const createPost = async(req , res)=>{
 
@@ -48,7 +46,7 @@ const getAllPosts = async(req , res)=>{
     }
 }
 
-const pageAmount = 10
+const pageAmount = 5
 
 const getPostsByPage = async(req , res)=>{
     const {page} = req.query
