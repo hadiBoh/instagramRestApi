@@ -1,4 +1,3 @@
-const {addLike , deleteLike , getLikes} = require("../services/likeService")
 const Like = require("../models/likes")
 const Post = require("../models/posts")
 
@@ -32,6 +31,7 @@ const deleteThePostLike = async (req , res)=>{
 
     try {
        const response = await Like.findOne({user: userId , post:postId}).exec()
+
        await response.deleteOne()
 
         return res.json({likes:response})

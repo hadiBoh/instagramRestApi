@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const {createUser , getAllUsers , getUserById, updateUser, upload, updateUserBio} = require("../../controllers/userController")
+const {createUser , getAllUsers , updateUser, upload, updateUserBio} = require("../../controllers/userController")
 
 
 router.route("/")
@@ -9,7 +9,6 @@ router.route("/")
     .put(upload ,updateUser)
 
 router.route("/single")
-    .get(getUserById)
     .put(updateUserBio)
 
 

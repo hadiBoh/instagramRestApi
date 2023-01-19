@@ -1,6 +1,4 @@
-const { path } = require("path")
 
-const {addComment , fetchComments, fetchCommentsByPostId} = require("../services/commentService")
 
 const {sub} = require("date-fns")
 const Comment = require("../models/comments")
@@ -11,7 +9,7 @@ const createComment = async (req , res)=>{
     const date = sub(new Date() , {minutes:-210}).toISOString()
 
     const data = {post:postId , user:userId , comment , date}
-    
+
     try {
         const response = await Comment.create(data)
         return res.json(response)

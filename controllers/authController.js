@@ -1,4 +1,3 @@
-const {userByUsername } = require("../services/userService")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const User = require("../models/users")

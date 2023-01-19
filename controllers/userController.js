@@ -1,6 +1,5 @@
 const {v4:uuid} = require('uuid')
 const bcrypt = require("bcrypt")
-const {userById} = require("../services/userService")
 const path = require("path")
 const multer = require("multer")
 const User = require('../models/users')
@@ -37,16 +36,6 @@ const getAllUsers = async (req , res)=>{
 
 }
 
-const getUserById = async (req , res)=>{ // not using yet
-    const {userId} = req.body
-    try {
-        const result = await userById(userId)
-        return res.json(result)
-    } catch (error) {
-        res.status(400).json({message:error.message})
-    }
-
-}
 
 const updateUser = async (req , res)=>{
 
@@ -94,7 +83,7 @@ const storage = multer.diskStorage({
         cb(null , Date.now()+path.extname(file.originalname))
     }
 })
- 
+
 const upload = multer({
     storage:storage,
     limits:{fileSize:'500'},
@@ -115,7 +104,6 @@ const upload = multer({
 module.exports = {
     createUser,
     getAllUsers,
-    getUserById,
     updateUser,
     upload,
     updateUserBio

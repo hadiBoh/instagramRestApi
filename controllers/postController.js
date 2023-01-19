@@ -1,6 +1,4 @@
-const { resultOfSize } = require("../middlewares/sizeError")
-const {addPost , fetchPosts, fetchUserPost} = require("../services/postService")
-const {fetchComments} = require("../services/commentService")
+
 const multer = require("multer")
 const path = require("path")
 const Post = require("../models/posts")
