@@ -1,15 +1,16 @@
 const {addLike , deleteLike , getLikes} = require("../services/likeService")
-
+const Like = require("../models/likes")
+const Post = require("../models/posts")
 
 
 const likeThePost = async (req , res)=>{
     const {userId , postId} = req.body
-    const posts = await getLikes()
-    const userLikedAlready = posts?.some(like => like.userId === userId && like.postId === postId)
+    const posts = await Post.find().lean()
+    const userLikedAlready = posts?.some(like => like.user === userId && like.post === postId)
     if(userLikedAlready) return res.status(400).json({message:"you have already liked!"})
-    data = {userId, postId}
+    data = {user:userId, post:postId}
     try {
-       const response = await addLike(data)
+       const response = await Like.create(data)
         return res.json(response)
     } catch (error) {
         return res.json(error)
@@ -19,7 +20,7 @@ const likeThePost = async (req , res)=>{
 const getTheLikes = async (req , res)=>{
 
     try {
-       const response = await getLikes()
+       const response = await Like.find().lean()
         return res.json({likes:response})
     } catch (error) {
         return res.json(error)
@@ -28,9 +29,11 @@ const getTheLikes = async (req , res)=>{
 
 const deleteThePostLike = async (req , res)=>{
     const {postId , userId} = req.body
-    const data = {postId , userId}
+
     try {
-       const response = await deleteLike(data)
+       const response = await Like.findOne({user: userId , post:postId}).exec()
+       await response.deleteOne()
+
         return res.json({likes:response})
     } catch (error) {
         return res.json(error)

@@ -8,10 +8,15 @@ const cookieParser = require('cookie-parser')
 const corsOptions = require("./config/corsOptions")
 const verifyJWT = require("./middlewares/verifyJWT")
 const {fileCreator} = require("./middlewares/fileCreator")
+const { request } = require('express')
+const mongoose = require("mongoose")
+const {connentDB} = require("./config/mongoDB_Connect")
 /* app.use(logger) */
 
-/* app.use(cors(corsOptions)) */
-app.use(cors())
+connentDB()
+
+app.use(cors(corsOptions))
+
 
 app.use(cookieParser())
 
@@ -26,7 +31,7 @@ app.use("/login" , require("./api/routes/auth"))
 app.use("/refresh" , require("./api/routes/auth"))
 app.use("/logout" , require("./api/routes/logout"))
 
-/* app.use(verifyJWT) */
+app.use(verifyJWT)
 
 app.use("/users" , require("./api/routes/users"))
 app.use("/users/single" , require("./api/routes/users"))
@@ -39,5 +44,7 @@ app.use("/comments/userComments" , require("./api/routes/comments"))
 
 app.use("/likes" , require("./api/routes/likes"))
 
-
-app.listen(PORT ,()=> console.log(`server running on port ${PORT}`))
+mongoose.connection.once( 'open' ,()=>{
+    console.log("connected to mongoDB");
+    app.listen(PORT ,()=> console.log(`server running on port ${PORT}`))
+})

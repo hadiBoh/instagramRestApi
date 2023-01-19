@@ -1,7 +1,7 @@
 const {userByUsername } = require("../services/userService")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-
+const User = require("../models/users")
 
 
 
@@ -9,11 +9,11 @@ const jwt = require("jsonwebtoken")
 const login = async(req , res)=>{
     const {username , password} = req.body
     if(!username || !password) return res.status(400).json({message:"username or password is empty!"})
-    const user = await userByUsername(username)
+    const user = await User.findOne({username}).lean()
 
-    if(!user.length) return res.status(401).json({message:"not subscribed!"})
+    if(!user) return res.status(401).json({message:"not subscribed!"})
 
-    const matchPass = await bcrypt.compare(password, user[0].password)
+    const matchPass = await bcrypt.compare(password, user?.password)
 
     if(!matchPass) return res.status(401).json({message:"unAuthorized"})
 
@@ -30,7 +30,7 @@ const login = async(req , res)=>{
     )
 
     res.cookie('jwt', refreshToken, { httpOnly: true, sameSite:"None" , secure:true , maxAge: 7 * 24 * 60 * 60 * 1000 })
-    res.json({ accessToken , userId:user[0].userId , username:user[0].username , username:user[0].username})
+    res.json({ accessToken , userId:user._id , username:user.username })
 }
 
 
@@ -52,8 +52,8 @@ const refresh = async(req , res)=>{
                 process.env.AT,
                 {expiresIn:"15m"}
             )
-            const user = await userByUsername(decoded.username)
-            return res.json({accessToken , userId:user[0].userId , username:user[0].username})
+            const user = await User.findOne({username:decoded.username}).lean()
+            return res.json({accessToken , userId:user._id , username:user.username})
         }
     )
 }

@@ -3,28 +3,28 @@ const {addPost , fetchPosts, fetchUserPost} = require("../services/postService")
 const {fetchComments} = require("../services/commentService")
 const multer = require("multer")
 const path = require("path")
+const Post = require("../models/posts")
 
 const {sub} = require("date-fns")
 
 
 const createPost = async(req , res)=>{
 
-    const {userId , caption } = req.body
+    const {user , caption } = req.body
+    
     const date = sub(new Date() , {minutes:-210}).toISOString()
-    if(!userId) return res.status(400).json({message:"userId is required!"})
+    if(!user) return res.status(400).json({message:"userId is required!"})
 
     const route = req?.file.path
     
     const cutRoute = route.substr(15)
     
 
-    data = {userId , caption ,img:`images/postImg/${cutRoute}` , date}
-
+    data = {user ,caption ,img:`images/postImg/${cutRoute}` , date}
+    
     try {
-        const response = await addPost(data)
-        const posts = await fetchPosts()
-        const post = posts.find(post=> post.postId === response?.insertId)
-        return res.json(post)
+        const response = await Post.create(data)
+        return res.json(response)
     } catch (error) {
         return res.status(400).json({message:error.message})
     }
@@ -32,14 +32,7 @@ const createPost = async(req , res)=>{
 
 const getAllPosts = async(req , res)=>{
     try {
-        const response = await fetchPosts()
-        const allComments = await fetchComments()
-        
-        let newData = response.map(post=>{
-            const filterdComments = allComments.filter(comment => comment.postId === post.postId)
-            post.comments = filterdComments
-            return post
-        })
+        const response = await Post.find().lean()
         
         res.json({length:response.length})
     } catch (error) {
@@ -51,7 +44,7 @@ const pageAmount = 5
 
 const getPostsByPage = async(req , res)=>{
     const {page} = req.query
-    const posts = await fetchPosts()
+    const posts = await Post.find().lean()
     const end = page*pageAmount-1
     const start = page*pageAmount-pageAmount
     const sorted = posts.sort((a,b)=> b.date.localeCompare(a.date))
@@ -69,7 +62,7 @@ const getPostsByUserId = async(req , res)=>{
     const {userId} = req.body
 
     try {
-        const response = await fetchUserPost(userId)
+        const response = await Post.findOne(userId).lean()
         res.json(response)
     } catch (error) {
         res.json({message:error.message})

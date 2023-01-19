@@ -1,8 +1,9 @@
 const {v4:uuid} = require('uuid')
 const bcrypt = require("bcrypt")
-const {create , allUsers , userById, updateById, updateBioById} = require("../services/userService")
+const {userById} = require("../services/userService")
 const path = require("path")
 const multer = require("multer")
+const User = require('../models/users')
 
 
 const createUser = async (req , res)=>{
@@ -10,29 +11,33 @@ const createUser = async (req , res)=>{
 
     if(username === "profile") return res.status(400).json({message:" this username is forbidden to use!"})
     if (!username || !password) return res.status(400).json({message:"username and password are required!"})
-    const hashedPassword = await bcrypt.hash(password , 10)
-    const data = {userId:uuid(), username , password:hashedPassword , bio:"" , profile:""}
-
-    try {
-        await create(data)
-        return res.json({message:"user "+username+" created"})   
-    } catch (error) {
-        return res.status(400).json({message:error.message})   
+    const duplicate = await User.findOne({username}).lean().exec()
+    if (duplicate) {
+        return res.status(400).json({message:" this username is taken already!"})
     }
+    const hashedPassword = await bcrypt.hash(password , 10)
+    const data = { username , password:hashedPassword , bio:"" , profile:""}
+
+    const user = await User.create(data)
+
+    if (user) {
+        return res.json({message:"user "+username+" created"})  
+    }
+    return res.status(400).json({message:"somethind went wrong"}) 
 
 }
 const getAllUsers = async (req , res)=>{
 
     try {
-        const result = await allUsers()
-        return res.json({users:result})
+        const users = await User.find().select('-password').lean()
+        return res.json({users})
     } catch (error) {
         res.status(400).json({message:error.message})
     }
 
 }
 
-const getUserById = async (req , res)=>{
+const getUserById = async (req , res)=>{ // not using yet
     const {userId} = req.body
     try {
         const result = await userById(userId)
@@ -48,14 +53,16 @@ const updateUser = async (req , res)=>{
     const {userId} = req?.body
 
     const route = req?.file.path
+    const user = await User.findById(userId).exec()
+
     const newRoute = route?.replace("images" , "images/")
     const entries = {
         img:newRoute?.replace("profile" , "profile/")
     } 
-
+    user.profile = entries.img
     try {
-        const result = await updateById(userId , entries)
-        return res.json(result)
+        await user.save()
+        return res.json({message:"updated!"})
     } catch (error) {
         res.status(400).json({message:error.message})
     }
@@ -65,12 +72,14 @@ const updateUser = async (req , res)=>{
 const updateUserBio = async (req , res)=>{
 
     const {userId , bio} = req?.body
+    const user = await User.findById(userId).exec()
     const entries = {
         bio
     } 
+    user.bio = entries.bio
     try {
-        const result = await updateBioById(userId , entries)
-        return res.json(result)
+        await user.save()
+        return res.json({message:"updated!"})
     } catch (error) {
         res.status(400).json({message:error.message})
     }
